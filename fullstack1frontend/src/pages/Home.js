@@ -1,6 +1,20 @@
 import React from 'react'
+import api from '../services/api'
 
 function Home() {
+
+
+    const initialLoadUsers = async () => {
+        const users = await api.get("users", 
+          
+        ).then(response => {
+            console.log("Data received ", response.data)
+        })
+        console.log("Users from API ", users.data);
+    }
+
+    initialLoadUsers();
+
   return (
     <div className='container'>
         <div className='py-4'>
