@@ -21,7 +21,6 @@ function Home() {
             const response = await result.json();
             console.log("response ", response);
             
-            // console.log("Data ", data);
             setUsers(response);
         } catch (error) {
             console.log("Error ", error);
@@ -29,8 +28,7 @@ function Home() {
         
     }
 
-  return (
-    <div className='container'>
+  return (<div className="container">
         <div className='py-4'>
 
             <table className='table border shadow'>
