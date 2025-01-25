@@ -1,8 +1,8 @@
-import React, {useState} from 'react'
-import {Link, useNavigate} from "react-router-dom";
+import React, {useState, useEffect} from 'react'
+import {Link, useNavigate, useParams} from "react-router-dom";
 import api from '../services/api';
 
-function AddUser() {
+function AddOrEditUser() {
 
   const [user, setUser] = useState({
     name: "",
@@ -10,21 +10,38 @@ function AddUser() {
     email:""
   })
 
+  const params = useParams();
+  const formName = params.id === "NA" ? "Add User" : "Update user";
+
+  useEffect(() => {
+    if(params.id !== "NA") {
+      const getUser = async (id) => {
+        try {
+          const response = await api.get(`users/getUsr/${params.id}`);
+          console.log("response ", response.data);
+          setUser({...response.data});
+        } catch (error) {
+          console.log("error ", error);
+        }
+      }
+      getUser();
+    } 
+    else {
+      setUser({
+        name:"",
+        email:"",
+        userName:""
+      })
+    }
+  
+  }, [params])
+
   const handleOnChange = (e) => {
     setUser({
       ...user, 
       [e.target.name]: e.target.value
     })
   }
-
-
-  // const inputFields = [
-  //   {
-  //     name: "name",
-  //     id: "userName"
-  //     type: "text",
-  //   }
-  // ]
 
   const navigateTo = useNavigate();
 
@@ -45,7 +62,7 @@ function AddUser() {
       <div className='row'>
         <div className='col-md-6 offset-md-3 border rounded p-4 mt-2 shadow'>
 
-          <h2 className='text-center m-4'>Register</h2>
+          <h2 className='text-center m-4'>{formName}</h2>
 
           <form onSubmit={submitForm}>
           <div className='mb-3'>
@@ -73,4 +90,4 @@ function AddUser() {
   )
 }
 
-export default AddUser
+export default AddOrEditUser

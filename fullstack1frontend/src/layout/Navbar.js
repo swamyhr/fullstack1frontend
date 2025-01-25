@@ -13,7 +13,7 @@ function Navbar() {
   aria-expanded="false" aria-label="Toggle navigation">
     <span className="navbar-toggler-icon"></span>
   </button>
-  <Link to="/addUser" className='btn btn-outline-light'>Add User</Link>
+  <Link to="/addOrEditUser/NA" className='btn btn-outline-light'>Add User</Link>
   
         </div>
   </nav>

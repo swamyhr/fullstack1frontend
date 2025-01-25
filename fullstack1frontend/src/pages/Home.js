@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import api from '../services/api'
+import { Link } from 'react-router-dom';
 
 function Home() {
 
@@ -40,7 +41,7 @@ function Home() {
                         <td>{user.email}</td>
                         <td>
                             <button className='btn btn-primary mx-2'>View </button>
-                            <button className='btn btn-outline-primary mx-2'>Edit </button>
+                            <Link to={`/addOrEditUser/${user.id}`} className='btn btn-outline-primary mx-2'>Edit </Link>
                             <button className='btn btn-danger mx-2'>Delete</button>
                         </td>
                     </tr>)) : <td>No users found</td>}
