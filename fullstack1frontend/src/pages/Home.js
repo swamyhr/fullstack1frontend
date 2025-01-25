@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-// import api from '../services/api'
+import api from '../services/api'
 
 function Home() {
 
@@ -10,22 +10,13 @@ function Home() {
     }, [])
 
     const initialLoadUsers = async () => {
-        // const users = await api.get("/users", 
-          
-        // ).then(response => {
-        //     console.log("Data received ", response.data)
-        // })
-        // console.log("Users from API ", users.data);
         try {
-            const result = await fetch("http://localhost:8080/users");
-            const response = await result.json();
-            console.log("response ", response);
-            
-            setUsers(response);
+            const response = await api.get("/users");
+            const data = response.data;
+            setUsers(data);
         } catch (error) {
             console.log("Error ", error);
         }
-        
     }
 
   return (<div className="container">
