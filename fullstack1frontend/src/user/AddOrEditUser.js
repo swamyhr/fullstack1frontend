@@ -11,9 +11,8 @@ function AddOrEditUser() {
   })
 
   const params = useParams();
-  const  { userId } = params;
+  const  { id : userId } = params;
   const [formName, setFormName] = useState("Add User");
-  let submitFunction = null;
 
   useEffect(() => {
     if(userId !== "NA") {

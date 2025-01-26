@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import api from '../services/api'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Home() {
 
@@ -15,6 +15,20 @@ function Home() {
             const response = await api.get("/users");
             const data = response.data;
             setUsers(data);
+        } catch (error) {
+            console.log("Error ", error);
+        }
+    }
+
+    // const navigateTo = useNavigate();?
+
+    const deletUserById = async (e, userId) => {
+        e.preventDefault();
+        try {
+            console.log("User ID ", userId);
+            
+            await api.delete(`/users/deleteUser/${userId}`);
+            initialLoadUsers();
         } catch (error) {
             console.log("Error ", error);
         }
@@ -42,7 +56,7 @@ function Home() {
                         <td>
                             <button className='btn btn-primary mx-2'>View </button>
                             <Link to={`/addOrEditUser/${user.id}`} className='btn btn-outline-primary mx-2'>Edit </Link>
-                            <button className='btn btn-danger mx-2'>Delete</button>
+                            <button className='btn btn-danger mx-2' onClick={(e) => deletUserById(e, user.id)} >Delete</button>
                         </td>
                     </tr>)) : <td>No users found</td>}
                 </tbody>
