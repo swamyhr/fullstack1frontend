@@ -1,14 +1,50 @@
-import React, {useState} from 'react'
-import {Link, useNavigate} from "react-router-dom";
+import React, {useState, useEffect} from 'react'
+import {Link, useNavigate, useParams} from "react-router-dom";
 import api from '../services/api';
+import { getUserDetailsInHelper } from '../common/helper';
 
-function AddUser() {
+function AddOrEditUser() {
 
   const [user, setUser] = useState({
     name: "",
     userName: "",
     email:""
   })
+
+  const params = useParams();
+  const  { id : userId } = params;
+  const [formName, setFormName] = useState("Add User");
+
+  useEffect(() => {
+    if(userId !== "NA") {
+      // const getUser = async (id) => {
+      //   try {
+      //     const response = await api.get(`users/getUsr/${userId}`);
+      //     console.log("response ", response.data);
+      //     setUser({...response.data});
+      //   } catch (error) {
+      //     console.log("error ", error);
+      //   }
+      // }
+
+      //following code is to reduce / replace network call to get already existing user details 
+      // unless only limited details are being fetched
+      let userDetailsForEdit = getUserDetailsInHelper();
+      if(Object.keys(userDetailsForEdit).length > 0) {
+        setUser(userDetailsForEdit);
+        setFormName("Update User");
+      }
+    } 
+    else {
+      setUser({
+        name:"",
+        email:"",
+        userName:""
+      });
+      setFormName("Add User")
+    }
+  
+  }, [params])
 
   const handleOnChange = (e) => {
     setUser({
@@ -17,18 +53,9 @@ function AddUser() {
     })
   }
 
-
-  // const inputFields = [
-  //   {
-  //     name: "name",
-  //     id: "userName"
-  //     type: "text",
-  //   }
-  // ]
-
   const navigateTo = useNavigate();
 
-  const submitForm = async (e) => {
+  let submitForm = async (e) => {
     e.preventDefault();  
     try {
       await api.post("/users/create", user);
@@ -38,14 +65,27 @@ function AddUser() {
     } 
   }
 
+  const updateUser = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await api.put(`/users/updateUsr/${userId}`, user);
+      navigateTo("/");
+    } catch (error) {
+      console.log("error ", error);
+    }
+  }
+
   const { name, userName, email } = user;
+  if(userId !== "NA") {
+    submitForm = updateUser;
+  }
 
   return (
     <div className='container'>
       <div className='row'>
         <div className='col-md-6 offset-md-3 border rounded p-4 mt-2 shadow'>
 
-          <h2 className='text-center m-4'>Register</h2>
+          <h2 className='text-center m-4'>{formName}</h2>
 
           <form onSubmit={submitForm}>
           <div className='mb-3'>
@@ -73,4 +113,4 @@ function AddUser() {
   )
 }
 
-export default AddUser
+export default AddOrEditUser
