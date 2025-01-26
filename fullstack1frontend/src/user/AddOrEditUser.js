@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import {Link, useNavigate, useParams} from "react-router-dom";
 import api from '../services/api';
+import { getUserDetailsInHelper } from '../common/helper';
 
 function AddOrEditUser() {
 
@@ -16,17 +17,23 @@ function AddOrEditUser() {
 
   useEffect(() => {
     if(userId !== "NA") {
-      const getUser = async (id) => {
-        try {
-          const response = await api.get(`users/getUsr/${userId}`);
-          console.log("response ", response.data);
-          setUser({...response.data});
-        } catch (error) {
-          console.log("error ", error);
-        }
+      // const getUser = async (id) => {
+      //   try {
+      //     const response = await api.get(`users/getUsr/${userId}`);
+      //     console.log("response ", response.data);
+      //     setUser({...response.data});
+      //   } catch (error) {
+      //     console.log("error ", error);
+      //   }
+      // }
+
+      //following code is to reduce / replace network call to get already existing user details 
+      // unless only limited details are being fetched
+      let userDetailsForEdit = getUserDetailsInHelper();
+      if(Object.keys(userDetailsForEdit).length > 0) {
+        setUser(userDetailsForEdit);
+        setFormName("Update User");
       }
-      getUser();
-      setFormName("Update User");
     } 
     else {
       setUser({
