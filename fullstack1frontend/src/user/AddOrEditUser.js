@@ -11,13 +11,15 @@ function AddOrEditUser() {
   })
 
   const params = useParams();
-  const formName = params.id === "NA" ? "Add User" : "Update user";
+  const  { userId } = params;
+  const [formName, setFormName] = useState("Add User");
+  let submitFunction = null;
 
   useEffect(() => {
-    if(params.id !== "NA") {
+    if(userId !== "NA") {
       const getUser = async (id) => {
         try {
-          const response = await api.get(`users/getUsr/${params.id}`);
+          const response = await api.get(`users/getUsr/${userId}`);
           console.log("response ", response.data);
           setUser({...response.data});
         } catch (error) {
@@ -25,13 +27,15 @@ function AddOrEditUser() {
         }
       }
       getUser();
+      setFormName("Update User");
     } 
     else {
       setUser({
         name:"",
         email:"",
         userName:""
-      })
+      });
+      setFormName("Add User")
     }
   
   }, [params])
@@ -45,7 +49,7 @@ function AddOrEditUser() {
 
   const navigateTo = useNavigate();
 
-  const submitForm = async (e) => {
+  let submitForm = async (e) => {
     e.preventDefault();  
     try {
       await api.post("/users/create", user);
@@ -55,7 +59,20 @@ function AddOrEditUser() {
     } 
   }
 
+  const updateUser = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await api.put(`/users/updateUsr/${userId}`, user);
+      navigateTo("/");
+    } catch (error) {
+      console.log("error ", error);
+    }
+  }
+
   const { name, userName, email } = user;
+  if(userId !== "NA") {
+    submitForm = updateUser;
+  }
 
   return (
     <div className='container'>
